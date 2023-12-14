@@ -11,4 +11,5 @@ urlpatterns = [
     # path('delete/<int:id>', views.delete_post, name='delete_post'),
     # class base view
     path('delete/<int:id>/', views.delete_post_view.as_view(), name='delete_post'),
+    path('details/<int:pk>/', views.post_details_view.as_view(), name='details_post'),
 ]

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from . import forms
 from .import models 
 from django.contrib.auth.decorators import login_required
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
 from django.urls import reverse_lazy
 # for class base view login required
 from django.utils.decorators import method_decorator
@@ -19,6 +19,7 @@ def add_post(request):
     else:
         post_form = forms.PostForm()
     return render(request, 'add_post.html', {'form': post_form})
+
 
 # add post using class based views
 # https://ccbv.co.uk/projects/Django/4.2/django.views.generic.edit/CreateView/
@@ -49,6 +50,7 @@ def edit_post(request, id):
     #     post_form = forms.PostForm()
     return render(request, 'add_post.html', {'form': post_form})
 
+
 # class based edit post
 @method_decorator(login_required, name='dispatch')
 class edit_post_view(UpdateView):
@@ -70,6 +72,8 @@ def delete_post(request, id):
     print(post)
     return redirect('home')
 
+
+
 # class based delete post
 # for delete post first create a template same to same add_post.html 
 @method_decorator(login_required, name='dispatch')
@@ -80,3 +84,10 @@ class delete_post_view(DeleteView):
     success_url = reverse_lazy('user_profile')
     # select primary key id
     pk_url_kwarg ='id'
+
+
+
+class post_details_view(DetailView):
+    model  = models.Post
+    # pk_url_kwarg = 'id'
+    template_name = 'post_details.html'

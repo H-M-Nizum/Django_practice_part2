@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}POST Details{% endblock title %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div style="width: 50%; margin: auto">
+    <div class="col-sm-12 mb-6 mb-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <!-- post mean app name -->
+                <img src="{{post.image.url}}" class="card-img-top" alt="user image">
+                <h4 class="card-title">{{post.title}}</h4>
+                <p class="card-text">{{post.content}}</p>
+                <h5 class="card-title">Author: {{post.author.first_name}} {{post.author.last_name}}</h5>
+                <div class="mb-2">
+                    Categories : -
+                    {% for j in post.category.all %}
+                    <button class="btn btn-primary" disabled>{{j.name}}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
