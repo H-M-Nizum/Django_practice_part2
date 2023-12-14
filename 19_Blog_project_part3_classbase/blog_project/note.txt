@@ -1,0 +1,7 @@
+1. Working with Admin Panel
+
+    py manage.py makemigrations
+
+    py manage.py migrate 
+
+    py manage.py createsuperuser
