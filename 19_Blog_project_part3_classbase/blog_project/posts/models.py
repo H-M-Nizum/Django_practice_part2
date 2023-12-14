@@ -15,6 +15,9 @@ class Post(models.Model):
     # akjon author multiple post likhe ba muultiple post ar akjon author thakte pare
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     
+    # upload image filed . blank=true and null=true for this field create after some post
+    image = models.ImageField(upload_to='posts/media/uploads/', blank=True, null=True)
+    
     # database a name show korar jonne
     def __str__(self):
         return self.title
