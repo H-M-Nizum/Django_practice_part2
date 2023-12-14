@@ -22,4 +22,38 @@
         </div>
     </div>
 </div>
+
+
+<div class="card container mt-5 mb-5 pt-3 bg-body-secondary">
+    <h5>Total comments : {{comments | length}}</h5>
+    <div class="card-body">
+      {% for c in comments %}
+      <div class="card text-center m-3">
+        <div class="card-header">
+           {{c.name}}
+        </div>
+        <div class="card-body">
+          <p class="card-text">{{c.body}}</p>
+          <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+        </div>
+        <div class="card-footer text-body-secondary">
+          {{c.created_on}}
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+  </div>
+
+<div class="card container mt-5 mb-5 bg-body-secondary">
+    <div class="card-body">
+      
+      <h1>Add comments</h1>
+      <form method="post">
+          {% csrf_token %}
+          {{comment_form | crispy}}
+          <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
 {% endblock content %}

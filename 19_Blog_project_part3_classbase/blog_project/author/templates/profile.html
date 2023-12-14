@@ -15,7 +15,7 @@
                 <div class="card">
                     <div class="card-body">
                         <img src="{{i.image.url}}" class="card-img-top" alt="user image">
-                        <h4 class="card-title">{{i.title}}</h4>
+                        <h4 class="card-title"><a class="text-decoration-none text-dark" href="{% url 'details_post' i.id %}">{{i.title}}</a></h4>
                         <p class="card-text">{{i.content | truncatewords:10}}</p>
                         <h5 class="card-title">Author: {{i.author.first_name}} {{i.author.last_name}}</h5>
                         <div class="mb-2">
