@@ -8,6 +8,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from posts.models import Post
 
+# for class base user login
+from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import reverse_lazy
+
+
 # Create your views here.
 
 # def add_author(request):
@@ -60,7 +65,30 @@ def user_login(request):
     else:
         form = AuthenticationForm()
         return render(request, 'register.html', {'form': form, 'type': 'Login'})
-   
+
+
+#  class base login view
+class user_login_view(LoginView):
+    template_name = 'register.html'
+    # success_url = reverse_lazy('user_profile')
+    
+    def get_success_url(self):
+        return reverse_lazy('user_profile')
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'User login successfully')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.success(self.request, 'User login information is incorrect')
+        return super().form_invalid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["type"] = 'Login'
+        return context
+    
+
    
             
 @login_required    
@@ -102,3 +130,8 @@ def password_change(request):
 def user_logout(request):
     logout(request)
     return redirect('user_login')
+
+# class base user logout
+class user_logout_view(LogoutView):
+    def get_success_url(self):
+        return reverse_lazy('user_login')
