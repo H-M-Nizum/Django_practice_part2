@@ -19,3 +19,27 @@ def delete_cookies(request):
     response = render(request, 'delete.html')
     response.delete_cookie('name')
     return response
+
+
+#  session
+
+def set_session(request):
+    data = {
+        'name' : 'Nizum',
+        'age' : 23,
+        'language' : 'bangla'
+    }
+    
+    request.session.update(data)
+    return render(request, 'home.html')
+
+
+def get_session(request):
+    data = request.session
+    return render(request, 'get_session.html', {'data': data})
+
+
+def delete_session(request):
+    request.session.flush()
+    request.session.clear_expired()
+    return render(request, 'delete_session.html')
