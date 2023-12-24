@@ -173,7 +173,7 @@ class PayLoanView(LoginRequiredMixin, View):
                 loan.loan_approved = True
                 loan.transaction_type = LOAN_PAID
                 loan.save()
-                return redirect('transactions:loan_list')
+                return redirect('loan_list')
             else:
                 messages.error(
             self.request,
@@ -190,6 +190,7 @@ class LoanListView(LoginRequiredMixin,ListView):
     model = Transaction
     template_name = 'loan_request.html'
     context_object_name = 'loans' # loan list ta ei loans context er moddhe thakbe
+    title = 'LOAN'
     
     def get_queryset(self):
         user_account = self.request.user.account
