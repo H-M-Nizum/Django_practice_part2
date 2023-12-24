@@ -16,8 +16,8 @@ GENDER_TYPE = (
 
 class UserRegistrationForm(UserCreationForm):
     birth_day  =forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    gender = forms.CharField(max_length=10, choices=GENDER_TYPE)
-    account_type = forms.CharField(max_length=10, choices=ACCOUNT_TYPE)
+    gender = forms.ChoiceField(choices=GENDER_TYPE)
+    account_type = forms.ChoiceField(choices=ACCOUNT_TYPE)
     
     street_address = forms.CharField(max_length = 100)
     city = forms.CharField(max_length = 100)
@@ -26,7 +26,7 @@ class UserRegistrationForm(UserCreationForm):
     
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'account_type','birth_day', 'gender', 'street_address', 'city', 'postal_code', 'country']
+        fields = ['username', 'first_name', 'last_name', 'email',  'account_type','birth_day', 'gender', 'street_address', 'city', 'postal_code', 'country']
         
         
     # jehetu ak e form the tinta model a data save hobe .. so save function ta handel korte hobbe.
