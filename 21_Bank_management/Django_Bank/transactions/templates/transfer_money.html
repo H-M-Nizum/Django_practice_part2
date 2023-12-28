@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Transfer Money</h2>
+  <form method="post" action="{% url 'transfer_money' %}">
+    {% csrf_token %}
+    
+    {{ form.non_field_errors }}
+    
+    <div class="form-group">
+      <label for="{{ form.receiver_account.id_for_label }}">Receiver Account:</label>
+      {{ form.receiver_account }}
+      {{ form.receiver_account.errors }}
+    </div>
+    
+    <div class="form-group">
+      <label for="{{ form.amount.id_for_label }}">Amount:</label>
+      {{ form.amount }}
+      {{ form.amount.errors }}
+    </div>
+
+    <button type="submit">Transfer</button>
+  </form>
+{% endblock %}

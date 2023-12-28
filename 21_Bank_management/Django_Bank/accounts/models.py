@@ -26,13 +26,14 @@ class UserBankAccountModel(models.Model):
     # Every user have a unique account number.
     account_no = models.IntegerField(unique=True)
     
-    birth_day  =models.DateField(null=True, blank = True)
+    birth_day  = models.DateField(null=True, blank = True)
     gender = models.CharField(max_length=10, choices=GENDER_TYPE)
     
     initial_deposite_date = models.DateField(auto_now_add=True)
     
     # akjon user 12 digit porjonto and dosomik ar por 2 gor nite parbe.
     balance = models.DecimalField(default=0, max_length=12, max_digits=1000000000000, decimal_places=2)
+    is_bankrupt = models.BooleanField(default=False)
     
     def __str__(self):
         return str(self.account_no)

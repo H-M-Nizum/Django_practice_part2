@@ -6,15 +6,27 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.http import HttpResponse
 from django.views.generic import CreateView, ListView
-from transactions.constants import DEPOSIT, WITHDRAWAL,LOAN, LOAN_PAID
+from transactions.constants import DEPOSIT, WITHDRAWAL,LOAN, LOAN_PAID, SENDMONEY
 from datetime import datetime
 from django.db.models import Sum
 from transactions.forms import (
     DepositForm,
     WithdrawForm,
     LoanRequestForm,
+    sendmoneyForm,
 )
 from transactions.models import Transaction
+from django.contrib.auth.models import User
+
+
+############################
+from django.shortcuts import render, redirect
+from .forms import TransferForm
+from .models import Transaction
+from accounts.models import UserBankAccountModel
+from django.db import transaction
+
+############################
 
 class TransactionCreateMixin(LoginRequiredMixin, CreateView):
     template_name = 'transaction_form.html'
@@ -64,6 +76,8 @@ class DepositMoneyView(TransactionCreateMixin):
             self.request,
             f'{"{:,.2f}".format(float(amount))}$ was deposited to your account successfully'
         )
+        
+        app_password = 'adrg ggox kjmh mkiv'
 
         return super().form_valid(form)
 
@@ -95,6 +109,72 @@ class WithdrawMoneyView(TransactionCreateMixin):
 
 
 
+class transfer_money(TransactionCreateMixin):
+    form_class = sendmoneyForm
+    title = 'Send Money'
+
+    
+    def get_initial(self):
+        initial = {'transaction_type': SENDMONEY}
+        return initial
+    
+    def form_valid(self, form):
+
+        amount = form.cleaned_data['amount']
+        print(amount)
+        sender_account = self.request.user.account  # Assuming the sender is the logged-in user
+        print(sender_account.balance)
+
+        receiver = form.cleaned_data['account_no']
+        print(receiver)
+        # receiver_account = UserBankAccountModel.objects.get(account_no = receiver)
+        # print(receiver_account.balance)
+        
+        self.request.user.account.balance -= form.cleaned_data.get('amount')
+        # balance = 300
+        # amount = 5000
+        self.request.user.account.save(update_fields=['balance'])
+
+        messages.success(
+            self.request,
+            f'Successfully sendmoney {"{:,.2f}".format(float(amount))}$ from your account'
+        )
+
+        return super().form_valid(form)
+
+
+def transfer_money1(request):
+    title = 'Send Money'
+    if request.method == 'POST':
+        form = TransferForm(request.POST)
+        if form.is_valid():
+            sender_account = request.user.account  # Assuming the sender is the logged-in user
+            print(sender_account.balance)
+            receiver = form.cleaned_data['receiver_account']
+            print(UserBankAccountModel.objects.all())
+            if UserBankAccountModel.objects.get(account_no = receiver):
+                receiver_account = UserBankAccountModel.objects.get(account_no = receiver)
+                print(receiver_account.balance)
+                amount = form.cleaned_data['amount']
+                print(amount)
+
+                if sender_account.balance >= amount:
+                    # Update sender's balance
+                    sender_account.balance -= amount
+                    sender_account.save()
+
+                    receiver_account.balance += amount
+                    receiver_account.save()
+            else:
+                print('User not found')
+            
+
+    else:
+        form = TransferForm()
+
+    return render(request, 'transaction_form.html', {'form': form})
+
+   
 
 class LoanRequestView(TransactionCreateMixin):
     form_class = LoanRequestForm
@@ -197,3 +277,9 @@ class LoanListView(LoginRequiredMixin,ListView):
         queryset = Transaction.objects.filter(account=user_account,transaction_type=3)
         print(queryset)
         return queryset
+    
+    
+    
+    
+    
+    

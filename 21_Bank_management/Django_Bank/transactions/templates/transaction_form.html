@@ -8,10 +8,24 @@
         {% if title == 'Request For Loan' %}
             <div><a class="font-bold text-blue text-center pb-5 pt-10 px-5" href="{% url 'loan_list' %}">View All Loan List</a></div>
         {% endif %}
+
+        
+
+
+
         
         <h1 class="font-bold text-3xl text-center pb-5 pt-10 px-5">{{ title }}</h1>
         <form method="post" class="px-8 pt-6 pb-8 mb-4">
             {% csrf_token %}
+
+            {% if title == 'Send Money' %}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="account_no">
+                    ACCOUNT_NO
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight border rounded-md border-gray-500 focus:outline-none focus:shadow-outline" name="Account_no" id="Account_no" type="number" required placeholder="Account_no">
+            </div>
+            {% endif %}
 
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="amount">
