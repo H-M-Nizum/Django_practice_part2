@@ -18,6 +18,9 @@ from transactions.forms import (
 from transactions.models import Transaction
 from django.contrib.auth.models import User
 
+# for email send
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 ############################
 from django.shortcuts import render, redirect
@@ -27,6 +30,22 @@ from accounts.models import UserBankAccountModel
 from django.db import transaction
 
 ############################
+
+
+#####################
+# for email send
+
+def send_transaction_email(user, amount, subject, template):
+    message = render_to_string(template, {
+        'user' : user,
+        'amount' : amount,
+    })
+    send_email = EmailMultiAlternatives(subject, '', to=[user.email])
+    send_email.attach_alternative(message, "text/html")
+    send_email.send()
+
+#####################
+
 
 class TransactionCreateMixin(LoginRequiredMixin, CreateView):
     template_name = 'transaction_form.html'
@@ -77,7 +96,9 @@ class DepositMoneyView(TransactionCreateMixin):
             f'{"{:,.2f}".format(float(amount))}$ was deposited to your account successfully'
         )
         
-        app_password = 'adrg ggox kjmh mkiv'
+        # for send email
+        send_transaction_email(self.request.user, amount, "Deposite Message", "deposite_email.html")
+       
 
         return super().form_valid(form)
 
@@ -104,6 +125,8 @@ class WithdrawMoneyView(TransactionCreateMixin):
             self.request,
             f'Successfully withdrawn {"{:,.2f}".format(float(amount))}$ from your account'
         )
+        
+        send_transaction_email(self.request.user, amount, "Withdrawal Message", "withdrawal_email.html")
 
         return super().form_valid(form)
 
@@ -195,6 +218,8 @@ class LoanRequestView(TransactionCreateMixin):
             f'Loan request for {"{:,.2f}".format(float(amount))}$ submitted successfully'
         )
 
+        
+        send_transaction_email(self.request.user, amount, "Loan Request Message", "loan_email.html")
         return super().form_valid(form)
     
     
@@ -256,9 +281,11 @@ class PayLoanView(LoginRequiredMixin, View):
                 return redirect('loan_list')
             else:
                 messages.error(
-            self.request,
-            f'Loan amount is greater than available balance'
-        )
+                self.request,
+                f'Loan amount is greater than available balance'
+                )
+            
+            send_transaction_email(self.request.user, loan.amount, "Loan pay Message", "loan_pay.html")
 
         return redirect('loan_list')
 
